@@ -1,0 +1,42 @@
+CREATE DATABASE CompanyDB2;
+
+USE CompanyDB2;
+
+
+CREATE TABLE Employee (
+    EMPNO INT PRIMARY KEY,
+    EMP_NAME VARCHAR(50) NOT NULL,
+    JOB VARCHAR(30),
+    MGR INT,
+    SAL DECIMAL(10,2)
+);
+
+
+ALTER TABLE Employee
+ADD COMMISSION DECIMAL(10,2);
+
+
+INSERT INTO Employee VALUES (101, 'Ravi Kumar', 'Manager', NULL, 65000.00, 5000.00);
+INSERT INTO Employee VALUES (102, 'Sneha Rao', 'Clerk', 101, 25000.00, NULL);
+INSERT INTO Employee VALUES (103, 'Anil Mehta', 'Analyst', 101, 40000.00, 2000.00);
+INSERT INTO Employee VALUES (104, 'Divya Nair', 'Salesman', 102, 30000.00, 1500.00);
+INSERT INTO Employee VALUES (105, 'Rahul Patil', 'HR', NULL, 28000.00, NULL);
+
+
+UPDATE Employee
+SET JOB = 'Senior Clerk'
+WHERE EMPNO = 102;
+
+UPDATE Employee
+SET JOB = 'Senior Salesman'
+WHERE EMPNO = 104;
+
+
+ALTER TABLE Employee
+CHANGE ENAME EMP_NAME VARCHAR(50);
+
+
+DELETE FROM Employee
+WHERE EMPNO = 105;
+
+SELECT * FROM Employee;
