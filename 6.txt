@@ -1,0 +1,76 @@
+CREATE DATABASE CompanyDB6;
+USE CompanyDB6;
+
+
+
+
+CREATE TABLE N_RollCall (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100),
+    subject VARCHAR(50)
+);
+
+CREATE TABLE O_RollCall (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100),
+    subject VARCHAR(50)
+);
+
+
+
+
+
+
+INSERT INTO N_RollCall (student_id, student_name, subject) 
+VALUES 
+(1, 'John Doe', 'Math'),
+(2, 'Jane Smith', 'Science'),
+(3, 'Alice Brown', 'English');
+
+INSERT INTO O_RollCall (student_id, student_name, subject) 
+VALUES 
+(1, 'John Doe', 'Math'),
+(4, 'Tom Lee', 'History');
+
+
+
+
+
+
+DO $$
+BEGIN
+    DECLARE
+        v_student_id INT;
+        v_student_name VARCHAR(100);
+        v_subject VARCHAR(50);
+        done BOOLEAN DEFAULT FALSE;
+
+    DECLARE roll_call_cursor CURSOR FOR
+        SELECT student_id, student_name, subject
+        FROM N_RollCall
+        WHERE student_id NOT IN (SELECT student_id FROM O_RollCall);
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN roll_call_cursor;
+
+    LOOP
+        FETCH roll_call_cursor INTO v_student_id, v_student_name, v_subject;
+
+        IF done THEN
+            EXIT;
+        END IF;
+
+        INSERT INTO O_RollCall (student_id, student_name, subject)
+        VALUES (v_student_id, v_student_name, v_subject);
+    END LOOP;
+
+    CLOSE roll_call_cursor;
+END $$;
+
+
+
+
+
+
+SELECT * FROM O_RollCall;

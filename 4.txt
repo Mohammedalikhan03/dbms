@@ -1,0 +1,93 @@
+CREATE DATABASE CompanyDB4;
+
+USE CompanyDB4;
+
+
+CREATE TABLE CUSTOMERS (
+    ID INT PRIMARY KEY,
+    NAME VARCHAR(100),
+    AGE INT,
+    ADDRESS VARCHAR(255),
+    SALARY DECIMAL(10,2)
+);
+
+
+CREATE TABLE salary_changes (
+    change_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    change_type VARCHAR(10),
+    old_salary DECIMAL(10,2),
+    new_salary DECIMAL(10,2),
+    salary_difference DECIMAL(10,2),
+    change_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+DELIMITER $$ 
+CREATE TRIGGER salary_diff_after_insert
+AFTER INSERT ON CUSTOMERS
+FOR EACH ROW
+BEGIN
+    DECLARE new_salary DECIMAL(10,2);
+    SET new_salary = IFNULL(NEW.SALARY, 0);
+    INSERT INTO salary_changes (customer_id, change_type, old_salary, new_salary, salary_difference) 
+    VALUES (NEW.ID, 'INSERT', 0, new_salary, new_salary);
+END$$
+DELIMITER ;
+
+
+
+
+DELIMITER $$ 
+CREATE TRIGGER salary_diff_after_update
+AFTER UPDATE ON CUSTOMERS
+FOR EACH ROW
+BEGIN
+    DECLARE old_salary DECIMAL(10,2);
+    DECLARE new_salary DECIMAL(10,2);
+    DECLARE diff DECIMAL(10,2);
+
+    SET old_salary = IFNULL(OLD.SALARY, 0);
+    SET new_salary = IFNULL(NEW.SALARY, 0);
+    SET diff = new_salary - old_salary;
+
+    INSERT INTO salary_changes (customer_id, change_type, old_salary, new_salary, salary_difference) 
+    VALUES (NEW.ID, 'UPDATE', old_salary, new_salary, diff);
+END$$
+DELIMITER ;
+
+
+
+
+
+
+DELIMITER $$ 
+CREATE TRIGGER salary_diff_after_delete
+AFTER DELETE ON CUSTOMERS
+FOR EACH ROW
+BEGIN
+    INSERT INTO salary_changes (customer_id, change_type, old_salary, new_salary, salary_difference) 
+    VALUES (OLD.ID, 'DELETE', OLD.SALARY, 0, 0);
+END$$
+DELIMITER ;
+
+
+
+
+
+
+INSERT INTO CUSTOMERS VALUES (1, 'Rahul Sharma', 28, 'Mumbai', 40000.00);
+INSERT INTO CUSTOMERS VALUES (2, 'Sneha Reddy', 32, 'Hyderabad', 52000.00);
+INSERT INTO CUSTOMERS VALUES (3, 'Amit Patel', 30, 'Ahmedabad', 45000.00);
+
+
+
+
+
+UPDATE CUSTOMERS SET SALARY = 46000.00 WHERE ID = 3;
+
+DELETE FROM CUSTOMERS WHERE ID = 2;
+
+SELECT * FROM salary_changes;

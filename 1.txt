@@ -1,50 +1,39 @@
-Exp1
-CREATE DATABASE CompanyDB;
-USE CompanyDB;
+CREATE DATABASE CompanyDB3;
 
-
-
-
+USE CompanyDB3;
 
 
 CREATE TABLE Employee (
-    EMPNO INT,
-    ENAME VARCHAR(50),
-    JOB VARCHAR(30),
-    MANAGER_NO INT,
-    SAL DECIMAL(10,2),
-    COMMISSION DECIMAL(10,2)
+    E_id INT PRIMARY KEY,
+    E_name VARCHAR(50) NOT NULL,
+    Age INT,
+    Salary DECIMAL(10,2)
 );
 
 
+INSERT INTO Employee VALUES (201, 'Rohan Shetty', 25, 35000.00);
+INSERT INTO Employee VALUES (202, 'Meena Jain', 29, 42000.00);
+INSERT INTO Employee VALUES (203, 'Arjun Nair', 31, 50000.00);
+INSERT INTO Employee VALUES (204, 'Divya Singh', 28, 42000.00);
+INSERT INTO Employee VALUES (205, 'Karan Mehta', 35, 60000.00);
+INSERT INTO Employee VALUES (206, 'Anjali Rao', 31, 50000.00);
 
 
-CREATE USER 'empuser'@'localhost' IDENTIFIED BY 'emp@123';
-GRANT ALL PRIVILEGES ON CompanyDB.* TO 'empuser'@'localhost';
+SELECT COUNT(E_name) AS Total_Employees
+FROM Employee;
 
 
+SELECT MAX(Age) AS Maximum_Age
+FROM Employee;
 
-START TRANSACTION;
-INSERT INTO Employee VALUES (101, 'Ravi Kumar', 'Manager', 0, 60000, 5000);
-INSERT INTO Employee VALUES (102, 'Sneha Rao', 'Analyst', 101, 45000, 3000);
-INSERT INTO Employee VALUES (103, 'Ajay Singh', 'Clerk', 102, 25000, NULL);
+
+SELECT MIN(Age) AS Minimum_Age
+FROM Employee;
+
+
+SELECT Salary, COUNT(*) AS Number_of_Employees
+FROM Employee
+GROUP BY Salary;
+
+
 SELECT * FROM Employee;
-ROLLBACK;
-SELECT * FROM Employee;
-
-
-
-
-ALTER TABLE Employee
-MODIFY EMPNO INT NOT NULL,
-MODIFY ENAME VARCHAR(50) NOT NULL,
-MODIFY JOB VARCHAR(30) NOT NULL;
-ALTER TABLE Employee
-ADD PRIMARY KEY (EMPNO);
-
-
-
-INSERT INTO Employee VALUES (NULL, 'Test', 'Intern', NULL, 10000, NULL);
-INSERT INTO Employee VALUES (104, 'Priya Jain', 'HR', NULL, 30000, NULL);
-SELECT * FROM Employee;
-

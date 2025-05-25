@@ -1,0 +1,70 @@
+CREATE DATABASE DB5;
+USE DB5;
+
+
+
+
+
+CREATE TABLE Employee (
+    E_id INT PRIMARY KEY,
+    E_name VARCHAR(100),
+    Age INT,
+    Salary DECIMAL(10,2)
+);
+
+
+
+
+
+
+INSERT INTO Employee (E_id, E_name, Age, Salary) 
+VALUES 
+(1, 'John Doe', 30, 50000.00),
+(2, 'Jane Smith', 28, 55000.00),
+(3, 'Michael Johnson', 35, 60000.00);
+
+
+
+
+
+
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE GetEmployeeDetails()
+BEGIN
+    DECLARE v_E_id INT;
+    DECLARE v_E_name VARCHAR(100);
+    DECLARE v_Age INT;
+    DECLARE v_Salary DECIMAL(10,2);
+    DECLARE done BOOLEAN DEFAULT FALSE;
+    
+    DECLARE employee_cursor CURSOR FOR
+        SELECT E_id, E_name, Age, Salary FROM Employee;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    OPEN employee_cursor;
+    
+    read_loop: LOOP
+        FETCH employee_cursor INTO v_E_id, v_E_name, v_Age, v_Salary;
+        
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        SELECT v_E_id AS Employee_ID, v_E_name AS Employee_Name, v_Age AS Age, v_Salary AS Salary;
+    END LOOP;
+    
+    CLOSE employee_cursor;
+END$$
+
+DELIMITER ;
+
+
+
+
+
+
+
+CALL GetEmployeeDetails();
