@@ -1,0 +1,50 @@
+Exp1
+CREATE DATABASE CompanyDB;
+USE CompanyDB;
+
+
+
+
+
+
+CREATE TABLE Employee (
+    EMPNO INT,
+    ENAME VARCHAR(50),
+    JOB VARCHAR(30),
+    MANAGER_NO INT,
+    SAL DECIMAL(10,2),
+    COMMISSION DECIMAL(10,2)
+);
+
+
+
+
+CREATE USER 'empuser'@'localhost' IDENTIFIED BY 'emp@123';
+GRANT ALL PRIVILEGES ON CompanyDB.* TO 'empuser'@'localhost';
+
+
+
+START TRANSACTION;
+INSERT INTO Employee VALUES (101, 'Ravi Kumar', 'Manager', 0, 60000, 5000);
+INSERT INTO Employee VALUES (102, 'Sneha Rao', 'Analyst', 101, 45000, 3000);
+INSERT INTO Employee VALUES (103, 'Ajay Singh', 'Clerk', 102, 25000, NULL);
+SELECT * FROM Employee;
+ROLLBACK;
+SELECT * FROM Employee;
+
+
+
+
+ALTER TABLE Employee
+MODIFY EMPNO INT NOT NULL,
+MODIFY ENAME VARCHAR(50) NOT NULL,
+MODIFY JOB VARCHAR(30) NOT NULL;
+ALTER TABLE Employee
+ADD PRIMARY KEY (EMPNO);
+
+
+
+INSERT INTO Employee VALUES (NULL, 'Test', 'Intern', NULL, 10000, NULL);
+INSERT INTO Employee VALUES (104, 'Priya Jain', 'HR', NULL, 30000, NULL);
+SELECT * FROM Employee;
+
